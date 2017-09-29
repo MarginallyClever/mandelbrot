@@ -1,4 +1,4 @@
-// code found at http://introcs.cs.princeton.edu/java/32class/Mandelbrot.java.html
+// code is a variation of http://introcs.cs.princeton.edu/java/32class/Mandelbrot.java.html
 // converted to processing example by dan royer (dan@marginallyclever.com) 2017-09-28
 //---------------------------------------------------------------
 
