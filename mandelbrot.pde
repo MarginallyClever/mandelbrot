@@ -24,6 +24,8 @@ double aspect;
 boolean moved=false;
 boolean paused=false;
 
+
+
 void setup() {
   size(1024,768);
   
@@ -38,9 +40,8 @@ void setup() {
   rainbowTable = new color[256];
   for(int i=0;i<256;++i) rainbowTable[i] = rainbow(i);
   
-  xc=-0.7407339811325073;
-  yc=-0.14992965757846832;
-  zoom=0.030709465434152445;
+  //xc=-0.7407339811325073;  yc=-0.14992965757846832;  zoom=0.030709465434152445;
+  
   
   generateMandelbrot();
 }
@@ -137,11 +138,58 @@ void mouseMoved() {
 void mouseClicked() {
   if(paused) return;
   
-  zoom*=0.9;
-  xc = getMouseX();
-  yc = getMouseY();
-  print("xc="+xc+"; xc="+yc+"; zoom="+zoom+";");
+  double xc0=(float)xc - (float)zoom/2.0f;
+  double xc1=(float)xc + (float)zoom/2.0f;
+  
+  double yc0=(float)yc - (float)(zoom/2.0f)*(float)aspect;
+  double yc1=(float)yc + (float)(zoom/2.0f)*(float)aspect;
+  
+  double mx = getMouseX();
+  double my = getMouseY();
+  
+  println("A1:"+xc0+" "+yc0+" B1:"+xc1+" "+yc1);
+  
+  final double zoomAmount=0.9;
+  zoom*=zoomAmount;
+  xc0=(xc0-mx)*zoomAmount+mx;
+  yc0=(yc0-my)*zoomAmount+my;
+  xc1=(xc1-mx)*zoomAmount+mx;
+  yc1=(yc1-my)*zoomAmount+my;
+
+  xc = (xc0+xc1)/2;
+  yc = (yc0+yc1)/2;
+  
   generateMandelbrot();
+  
+  println("clicked");
+}
+
+boolean wasDragged=false;
+void mouseDragged() {
+  double xc0=(float)xc - (float)zoom/2.0f;
+  double xc1=(float)xc + (float)zoom/2.0f;
+  double yc0=(float)yc - (float)(zoom/2.0f)*(float)aspect;
+  double yc1=(float)yc + (float)(zoom/2.0f)*(float)aspect;
+  
+  double w = xc1-xc0;
+  double h = yc1-yc0;
+  if(w<0) w=-w;
+  if(h<0) h=-h;
+  
+  double dx=w*(double)(pmouseX-mouseX)/(double)width;
+  double dy=h*(double)(pmouseY-mouseY)/(double)height;
+  //println("dragged p="+xc+","+yc+"\td="+dx+","+dy);
+  xc+=dx;
+  yc+=dy;
+  wasDragged=true;
+}
+
+void mouseReleased() {
+  //println("released");
+  if(wasDragged) {
+    generateMandelbrot();
+    wasDragged=false;
+  }
 }
 
 
